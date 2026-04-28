@@ -1,15 +1,34 @@
+import { redirect } from "next/navigation";
+import { Pagination } from "@/components/pagination";
 import { ProductGrid } from "@/components/product-grid";
 import { StateMessage } from "@/components/state-message";
-import { APP_CONFIG } from "@/lib/constants";
+import { API_CONFIG, APP_CONFIG } from "@/lib/constants";
+import { getPageFromSearchParam, getTotalPages } from "@/lib/pagination";
 import { getProducts } from "@/lib/products";
 import type { ProductsResponse } from "@/types/product";
 
-export default async function Home() {
+type HomeProps = {
+  searchParams: Promise<{
+    page?: string | string[] | undefined;
+  }>;
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const { page } = await searchParams;
+  const pageParam = Array.isArray(page) ? page[0] : page;
+  const currentPage = getPageFromSearchParam(page);
+
+  if (pageParam && String(currentPage) !== pageParam) {
+    redirect("/");
+  }
+
   let productsData: ProductsResponse | null = null;
   let errorMessage = "";
 
   try {
-    productsData = await getProducts();
+    productsData = await getProducts({
+      page: currentPage,
+    });
   } catch (error) {
     errorMessage =
       error instanceof Error
@@ -18,6 +37,13 @@ export default async function Home() {
   }
 
   const products = productsData?.products ?? [];
+  const totalItems = productsData?.total ?? 0;
+  const pageSize = productsData?.limit ?? API_CONFIG.productsPerPage;
+  const totalPages = getTotalPages(totalItems, pageSize);
+
+  if (productsData && totalItems > 0 && currentPage > totalPages) {
+    redirect(`/?page=${totalPages}`);
+  }
 
   return (
     <main className="min-h-screen bg-stone-50 text-stone-950">
@@ -48,16 +74,16 @@ export default async function Home() {
               </article>
 
               <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
-                <p className="text-sm text-stone-500">Itens por página</p>
+                <p className="text-sm text-stone-500">Página atual</p>
                 <strong className="mt-2 block text-2xl font-semibold text-stone-950">
-                  {productsData.limit}
+                  {currentPage} de {totalPages}
                 </strong>
               </article>
 
               <article className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
-                <p className="text-sm text-stone-500">Origem dos dados</p>
+                <p className="text-sm text-stone-500">Itens por página</p>
                 <strong className="mt-2 block text-2xl font-semibold text-stone-950">
-                  API real
+                  {productsData.limit}
                 </strong>
               </article>
             </div>
@@ -71,7 +97,15 @@ export default async function Home() {
             description={errorMessage}
           />
         ) : products.length > 0 ? (
-          <ProductGrid products={products} />
+          <>
+            <ProductGrid products={products} />
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+            />
+          </>
         ) : (
           <StateMessage
             title="Nenhum produto encontrado"
