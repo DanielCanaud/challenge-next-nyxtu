@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import { APP_CONFIG } from "@/lib/constants";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ShelfWise",
-  description:
-  "Catálogo de produtos com next.js, typescript, tailwind css e paginação"
+  title: APP_CONFIG.name,
+  description: APP_CONFIG.description
 };
 
 export default function RootLayout({
