@@ -25,22 +25,20 @@ export function ProductsHeader({
           </p>
 
           <h1 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em] text-stone-950 md:text-6xl">
-            Catálogo inteligente para explorar produtos reais
+            Catálogo de Produtos
           </h1>
 
           <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
-            Uma experiência limpa e responsiva para navegar por produtos,
-            visualizar informações essenciais e testar paginação com dados de
-            uma API pública.
+              Explore produtos de forma simples e organizada
           </p>
 
           <div className="mt-6 flex flex-wrap gap-2 text-sm">
             <span className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 font-medium text-stone-700">
-              API real
+              Dados atualizados
             </span>
 
             <span className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 font-medium text-stone-700">
-              Paginação por URL
+              Adptado para qualquer tela
             </span>
 
             <span className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 font-medium text-stone-700">

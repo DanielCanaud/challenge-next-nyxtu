@@ -63,7 +63,7 @@ export default async function Home({ searchParams }: HomeProps) {
             </p>
 
             <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-[-0.04em] text-stone-950 md:text-6xl">
-              Catálogo inteligente para explorar produtos reais
+              Catálogo de Produtos
             </h1>
           </section>
         )}
